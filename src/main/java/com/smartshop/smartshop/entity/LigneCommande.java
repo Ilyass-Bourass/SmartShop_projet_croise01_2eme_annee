@@ -16,6 +16,15 @@ public class LigneCommande {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private Integer quantite;
     private Double prixUnitaire;
+
+    @ManyToOne
+    @JoinColumn(name = "commande_id", nullable = false)
+    private Commande commande;
+
+    @ManyToOne
+    @JoinColumn(name = "produit_id", nullable = false)
+    private Produit produit;
 }

@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "clients")
@@ -43,6 +44,9 @@ public class Client extends Utilisateur {
 
     @Column(nullable = false)
     private Boolean estActif;
+
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Commande> commandes;
 
     public void prePersist() {
         super.prePersist();

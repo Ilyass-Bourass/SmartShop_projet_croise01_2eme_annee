@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "commandes")
@@ -38,6 +39,18 @@ public class Commande {
     private LocalDateTime dateModification;
 
     private String codePromo;
+
+
+    @ManyToOne
+    @JoinColumn(name = "client_id", nullable = false)
+    private Client client;
+
+    @OneToMany(mappedBy = "commande", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Paiement> paiements;
+
+
+    @OneToMany(mappedBy = "commande", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<LigneCommande> ligneCommandes;
 
     @PrePersist
     public void prePersist() {

@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "produits")
@@ -30,6 +31,9 @@ public class Produit {
 
     private LocalDateTime dateCreation;
     private LocalDateTime dateModification;
+
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "produit")
+    private List<LigneCommande> ligneCommandes;
 
     @PrePersist
     public void prePersist() {
