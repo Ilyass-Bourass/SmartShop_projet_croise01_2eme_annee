@@ -4,6 +4,7 @@ package com.smartshop.smartshop.entity;
 import com.smartshop.smartshop.enums.StatutCommande;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,6 +16,8 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
+
 public class Commande {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,13 +31,13 @@ public class Commande {
 
     private Double sousTotal;
     private Double montantRemise;
-    private Double montantHTApresRemise;
-    private Double tauxTVA;
-    private Double montantTVA;
-    private Double montantTTC;
+    private Double montantHtApresRemise;
+    private Double tauxTva;
+    private Double montantTva;
+    private Double montantTtc;
     private LocalDateTime dateValidation;
 
-    private Double montantRestantAPayer;
+    private Double montantRestantPayer;
     private LocalDateTime dateCreation ;
     private LocalDateTime dateModification;
 
@@ -56,7 +59,7 @@ public class Commande {
     public void prePersist() {
         dateCreation = LocalDateTime.now();
         statutCommande = StatutCommande.PENDING;
-        montantRestantAPayer = montantTTC;
+        montantRestantPayer = montantTtc;
     }
 
     @PreUpdate

@@ -3,6 +3,7 @@ package com.smartshop.smartshop.entity;
 import com.smartshop.smartshop.enums.RoleUtilisateur;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED)
+@Builder
 public class Utilisateur {
 
     @Id
