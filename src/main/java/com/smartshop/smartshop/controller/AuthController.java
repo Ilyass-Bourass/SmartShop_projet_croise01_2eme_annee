@@ -6,6 +6,7 @@ import com.smartshop.smartshop.dto.auth.ResponseLogin;
 import com.smartshop.smartshop.entity.Utilisateur;
 import com.smartshop.smartshop.service.AuthService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, ResponseLogin>> login(@RequestBody RequestLogin requestLogin, HttpSession session) {
+    public ResponseEntity<Map<String, ResponseLogin>> login(@Valid @RequestBody  RequestLogin requestLogin, HttpSession session) {
         ResponseLogin utilisateur = authService.login(requestLogin);
         session.setAttribute("UTILISATEUR_SESSION", utilisateur);
         session.setAttribute("UTILISATEUR_SESSION_ID", session.getId());
