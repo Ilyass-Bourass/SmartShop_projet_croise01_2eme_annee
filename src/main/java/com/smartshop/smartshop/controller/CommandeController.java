@@ -9,10 +9,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,5 +24,11 @@ public class CommandeController {
     public ResponseEntity<ResponseCommandeDTO> saveCommande(@Valid @RequestBody RequestCommandeDTO requestCommandeDTO) {
         ResponseCommandeDTO savedCommande = commandeService.createCommande(requestCommandeDTO);
         return new ResponseEntity<>(savedCommande, HttpStatus.CREATED);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ResponseCommandeDTO>> getAllCommandes() {
+        java.util.List<ResponseCommandeDTO> commandes = commandeService.findAllCommandes();
+        return new ResponseEntity<>(commandes, HttpStatus.OK);
     }
 }

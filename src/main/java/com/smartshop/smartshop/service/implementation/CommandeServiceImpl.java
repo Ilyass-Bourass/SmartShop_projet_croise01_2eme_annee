@@ -69,7 +69,10 @@ public class CommandeServiceImpl implements CommandeService {
 
     @Override
     public List<ResponseCommandeDTO> findAllCommandes() {
-        return List.of();
+        List<Commande> commandes = commandeRepository.findAll();
+        return commandes.stream()
+                .map(commandeMapper::toResponseCommandeDTO)
+                .toList();
     }
 
     @Override
