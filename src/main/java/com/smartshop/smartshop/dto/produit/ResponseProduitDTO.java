@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class ResponseProduit {
+public class ResponseProduitDTO {
     private Long id;
     private String nom;
     private Double prixUnitaire;
