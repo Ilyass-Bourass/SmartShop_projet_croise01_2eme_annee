@@ -21,7 +21,7 @@ public class RequestProduitDTO {
     @Positive(message = "Le prix doit être positif")
     private Double prixUnitaire;
 
-    @NotNull(message = "Le stock disponible est obligatoire")
-    @PositiveOrZero(message = "Le stock ne peut pas être négatif")
-    private Integer stockDisponible;
+    @NotNull(message = "La quantité est obligatoire")
+    @PositiveOrZero(message = "La quantité ne peut pas être négative")
+    private Integer quantite;
 }
