@@ -27,8 +27,11 @@ public class Produit {
     @Column(nullable = false)
     private Double prixUnitaire;
 
-    @Column(nullable = false)
+    @Column()
     private Integer stockDisponible;
+
+    @Column(nullable = false)
+    private Integer quantite;
 
     private Boolean isExiste;
 
