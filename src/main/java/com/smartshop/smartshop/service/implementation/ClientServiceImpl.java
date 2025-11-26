@@ -4,6 +4,7 @@ import com.smartshop.smartshop.dto.client.RequestClient;
 import com.smartshop.smartshop.dto.client.ResponseClient;
 import com.smartshop.smartshop.entity.Client;
 import com.smartshop.smartshop.exception.DuplicateResourceException;
+import com.smartshop.smartshop.exception.ResourceNotFoundException;
 import com.smartshop.smartshop.mapper.client.ClientMapper;
 import com.smartshop.smartshop.repository.ClientRepository;
 import com.smartshop.smartshop.service.ClientService;
@@ -28,5 +29,11 @@ public class ClientServiceImpl implements ClientService {
         Client client =clientMapper.toClient(requestClient);
         Client savedClient = clientRepository.save(client);
         return clientMapper.toResponseClient(savedClient);
+    }
+
+    @Override
+    public ResponseClient findClientById(Long id) {
+        Client client = clientRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Client not found"));
+        return clientMapper.toResponseClient(client);
     }
 }

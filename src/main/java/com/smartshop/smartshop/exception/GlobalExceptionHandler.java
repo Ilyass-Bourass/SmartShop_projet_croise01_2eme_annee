@@ -50,4 +50,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleDuplicateResourceException(DuplicateResourceException ex) {
         return new ResponseEntity<>(Map.of("errors", ex.getErrors()), HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        return new ResponseEntity<>(Map.of("message", ex.getMessage()), HttpStatus.NOT_FOUND);
+    }
+
 }
