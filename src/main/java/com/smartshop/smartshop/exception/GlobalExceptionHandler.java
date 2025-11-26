@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @ControllerAdvice
@@ -30,8 +31,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<String> handleEmptyRequest(HttpMessageNotReadableException ex) {
-        return new ResponseEntity<>("Error :Le body de la requête est vide", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
+
+
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
@@ -41,6 +44,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IdentifiantsInvalidesException.class)
     public ResponseEntity<?> handleIdentifiantsInvalidesException(IdentifiantsInvalidesException ex) {
         return new ResponseEntity<>(Map.of("message", ex.getMessage()), HttpStatus.UNAUTHORIZED);
+    }
 
+    @ExceptionHandler(DuplicateResourceException.class)
+    public ResponseEntity<?> handleDuplicateResourceException(DuplicateResourceException ex) {
+        return new ResponseEntity<>(Map.of("errors", ex.getErrors()), HttpStatus.CONFLICT);
     }
 }

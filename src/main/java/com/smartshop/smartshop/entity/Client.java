@@ -2,10 +2,8 @@ package com.smartshop.smartshop.entity;
 
 import com.smartshop.smartshop.enums.NiveauFidelite;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,6 +14,8 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
+@SuperBuilder
+
 public class Client extends Utilisateur {
 
     private String nom;

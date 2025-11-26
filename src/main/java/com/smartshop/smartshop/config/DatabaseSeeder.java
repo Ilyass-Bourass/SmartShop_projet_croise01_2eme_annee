@@ -27,15 +27,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                     .motDePasse(BCrypt.hashpw("12345", BCrypt.gensalt()))
                     .role(RoleUtilisateur.ADMIN).
                     build();
-
-              Utilisateur user02= Utilisateur.builder()
-                    .email("user@gmail.com")
-                    .motDePasse(BCrypt.hashpw("12345", BCrypt.gensalt()))
-                    .role(RoleUtilisateur.ClIENT).
-                    build();
-
               utilisateurRepository.save(user01);
-              utilisateurRepository.save(user02);
 
             }
     }

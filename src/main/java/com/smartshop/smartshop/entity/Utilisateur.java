@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
@@ -15,25 +16,25 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED)
-@Builder
+@SuperBuilder
 public class Utilisateur {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    protected Long id;
 
     @Column(unique = true, nullable = false)
-    private String email;
+    protected String email;
 
     @Column(nullable = false)
-    private String motDePasse;
+    protected String motDePasse;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private RoleUtilisateur role;
+    protected RoleUtilisateur role;
 
     @Column(nullable = false)
-    private LocalDateTime dateCreation;
+    protected LocalDateTime dateCreation;
 
     @PrePersist
     public void prePersist() {
