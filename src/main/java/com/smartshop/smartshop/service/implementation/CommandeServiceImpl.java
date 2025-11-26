@@ -90,6 +90,9 @@ public class CommandeServiceImpl implements CommandeService {
 
     @Override
     public ResponseCommandeDTO findCommandeById(Long id) {
-        return null;
+        Commande commande = commandeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Commande n'existe pas avec l'id : " + id));
+
+        return commandeMapper.toResponseCommandeDTO(commande);
     }
 }

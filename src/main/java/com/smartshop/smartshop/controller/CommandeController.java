@@ -37,4 +37,10 @@ public class CommandeController {
         String response = commandeService.deleteCommande(id);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseCommandeDTO> getCommandeById(@PathVariable Long id) {
+        ResponseCommandeDTO commande = commandeService.findCommandeById(id);
+        return new ResponseEntity<>(commande, HttpStatus.OK);
+    }
 }
