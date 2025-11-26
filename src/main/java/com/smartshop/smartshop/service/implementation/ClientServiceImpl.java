@@ -36,4 +36,11 @@ public class ClientServiceImpl implements ClientService {
         Client client = clientRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Client not found"));
         return clientMapper.toResponseClient(client);
     }
+
+    @Override
+    public String DeleteClientById(Long id) {
+        Client client = clientRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Client not found"));
+        clientRepository.delete(client);
+        return "Client a été supprimé avec succès";
+    }
 }

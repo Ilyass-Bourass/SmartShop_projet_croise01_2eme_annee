@@ -29,4 +29,10 @@ public class ClientController {
         return new ResponseEntity<>(responseClient, HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteClientById(@PathVariable Long id) {
+        String message = clientService.DeleteClientById(id);
+        return new ResponseEntity<>(message, HttpStatus.OK);
+    }
+
 }
