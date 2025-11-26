@@ -8,10 +8,13 @@ import com.smartshop.smartshop.mapper.ligneCommande.LigneCommandeMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring" ,uses = {LigneCommandeMapper.class})
+@Mapper(componentModel = "spring", uses = {LigneCommandeMapper.class})
 public interface CommandeMapper {
+
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "client", ignore = true)
     @Mapping(target ="numeroCommande" , expression = "java(creerNumeroCommande())")
+    @Mapping(target = "ligneCommandes", ignore = true)
     Commande toCommande(RequestCommandeDTO requestCommandeDTO);
 
     @Mapping(target = "idClient", source = "client.id")

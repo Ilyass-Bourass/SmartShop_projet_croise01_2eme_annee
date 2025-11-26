@@ -1,6 +1,7 @@
 package com.smartshop.smartshop.dto.commande;
 
 
+import com.smartshop.smartshop.dto.ligneCommande.RequestLigneCommandeDTO;
 import com.smartshop.smartshop.dto.ligneCommande.ResponseLigneCommandeDTO;
 import com.smartshop.smartshop.entity.LigneCommande;
 import jakarta.validation.constraints.NotBlank;
@@ -16,12 +17,13 @@ import java.util.List;
 @NoArgsConstructor
 
 public class RequestCommandeDTO {
-    private String numeroCommande;
 
     private String codePromo;
 
     @NotNull(message = "L'identifiant du client est obligatoire")
     private Long idClient;
+    @NotNull(message = "Le taux de TVA est obligatoire")
+    private Double tauxTva;
 
-    private List<ResponseLigneCommandeDTO> ligneCommandes;
+    private List<RequestLigneCommandeDTO> ligneCommandes;
 }
