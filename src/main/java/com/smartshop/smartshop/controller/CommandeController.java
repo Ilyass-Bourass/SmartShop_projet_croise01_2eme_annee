@@ -43,4 +43,10 @@ public class CommandeController {
         ResponseCommandeDTO commande = commandeService.findCommandeById(id);
         return new ResponseEntity<>(commande, HttpStatus.OK);
     }
+
+    @GetMapping("/client/{idClient}")
+    public ResponseEntity<List<ResponseCommandeDTO>> getCommandesByClientId(@PathVariable Long idClient) {
+        List<ResponseCommandeDTO> commandes = commandeService.findAllCommandesClient(idClient);
+        return new ResponseEntity<>(commandes, HttpStatus.OK);
+    }
 }

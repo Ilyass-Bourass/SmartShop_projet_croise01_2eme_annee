@@ -2,6 +2,7 @@ package com.smartshop.smartshop.service.implementation;
 
 import com.smartshop.smartshop.dto.commande.RequestCommandeDTO;
 import com.smartshop.smartshop.dto.commande.ResponseCommandeDTO;
+import com.smartshop.smartshop.dto.ligneCommande.ResponseLigneCommandeDTO;
 import com.smartshop.smartshop.entity.Client;
 import com.smartshop.smartshop.entity.Commande;
 import com.smartshop.smartshop.entity.LigneCommande;
@@ -73,6 +74,18 @@ public class CommandeServiceImpl implements CommandeService {
         return commandes.stream()
                 .map(commandeMapper::toResponseCommandeDTO)
                 .toList();
+    }
+
+    @Override
+    public List<ResponseCommandeDTO> findAllCommandesClient(long idClient) {
+        Client client = clientRepository.findById(idClient)
+                .orElseThrow(() -> new ResourceNotFoundException("Client n'existe pas avec l'id : " + idClient));
+
+        List<ResponseCommandeDTO> commandes = findAllCommandes();
+        List<ResponseCommandeDTO> commandesClient = commandes.stream()
+                .filter(commande -> commande.getIdClient() == idClient)
+                .toList();
+        return commandesClient;
     }
 
     @Override
