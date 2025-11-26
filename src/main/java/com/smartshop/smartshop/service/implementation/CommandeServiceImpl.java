@@ -77,7 +77,10 @@ public class CommandeServiceImpl implements CommandeService {
 
     @Override
     public String deleteCommande(Long id) {
-        return "";
+        Commande commande = commandeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Commande n'existe pas avec l'id : " + id));
+        commandeRepository.delete(commande);
+        return "la commande a été supprimée avec succès! de l'id : " + id;
     }
 
     @Override

@@ -31,4 +31,10 @@ public class CommandeController {
         java.util.List<ResponseCommandeDTO> commandes = commandeService.findAllCommandes();
         return new ResponseEntity<>(commandes, HttpStatus.OK);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteCommande(@PathVariable Long id) {
+        String response = commandeService.deleteCommande(id);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }
