@@ -8,10 +8,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/produits")
@@ -24,5 +23,15 @@ public class ProduitController {
     public ResponseEntity<ResponseProduitDTO> saveProduit(@Valid @RequestBody RequestProduitDTO requestProduitDTO) {
         ResponseProduitDTO responseProduitDTO = produitService.createProduit(requestProduitDTO);
         return new ResponseEntity<>(responseProduitDTO, HttpStatus.CREATED);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ResponseProduitDTO>> findAllProduits(
+            @RequestParam (defaultValue = "0") int page,
+            @RequestParam (defaultValue = "10") int size,
+            @RequestParam (required = false) Boolean isExiste
+    ) {
+        List<ResponseProduitDTO> produits = produitService.findAll(page, size, isExiste);
+        return new ResponseEntity<>(produits, HttpStatus.OK);
     }
 }

@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ProduitService {
     ResponseProduitDTO createProduit(RequestProduitDTO requestProduitDTO);
-    List<ResponseProduitDTO> findAll(Long id);
+    List<ResponseProduitDTO> findAll(int page,int size,Boolean isExiste);
     String deleteProduit(Long id);
     ResponseProduitDTO updateProduit(RequestProduitDTO requestProduitDTO);
 }

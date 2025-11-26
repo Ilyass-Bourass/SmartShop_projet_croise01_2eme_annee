@@ -24,7 +24,6 @@ public class RequestClient {
 
     @NotBlank(message = "L'email est obligatoire")
     @Email(message = "Format d'email invalide")
-
     private String email;
 
 
@@ -40,6 +39,7 @@ public class RequestClient {
     @NotBlank(message = "Le téléphone est obligatoire")
     private String telephone;
 
+    @NotBlank(message = "L'adresse est obligatoire")
     private String adresse;
 
     private NiveauFidelite niveauFidelite;
@@ -51,7 +51,5 @@ public class RequestClient {
     private LocalDateTime datePremiereCommande;
 
     private LocalDateTime dateDerniereCommande;
-
-
 
 }

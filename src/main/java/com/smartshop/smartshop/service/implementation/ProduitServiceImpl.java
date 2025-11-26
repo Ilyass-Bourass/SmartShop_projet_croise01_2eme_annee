@@ -7,7 +7,11 @@ import com.smartshop.smartshop.exception.DuplicateResourceException;
 import com.smartshop.smartshop.mapper.produit.ProduitMapper;
 import com.smartshop.smartshop.repository.ProduitRepository;
 import com.smartshop.smartshop.service.ProduitService;
+import com.smartshop.smartshop.specifications.SpecificationProduit;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,8 +37,15 @@ public class ProduitServiceImpl implements ProduitService {
     }
 
     @Override
-    public List<ResponseProduitDTO> findAll(Long id) {
-        return List.of();
+    public List<ResponseProduitDTO> findAll(int page,int size,Boolean isExiste) {
+        Pageable pageable = PageRequest.of(page, size);
+        Specification<Produit> sp = SpecificationProduit.isExiste(isExiste);
+
+        List<ResponseProduitDTO> produits = produitRepository.findAll(sp,pageable)
+                .stream()
+                .map(produitMapper::toResponseProduitDTO)
+                .toList();
+        return produits;
     }
 
     @Override
