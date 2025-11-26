@@ -3,8 +3,7 @@ package com.smartshop.smartshop.controller;
 
 import com.smartshop.smartshop.dto.auth.RequestLogin;
 import com.smartshop.smartshop.dto.auth.ResponseLogin;
-import com.smartshop.smartshop.entity.Utilisateur;
-import com.smartshop.smartshop.service.AuthService;
+import com.smartshop.smartshop.service.implementation.AuthServiceImpl;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +19,7 @@ import java.util.Map;
 @RequestMapping("/api/auth")
 
 public class AuthController {
-    private final AuthService authService;
+    private final AuthServiceImpl authService;
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, ResponseLogin>> login(@Valid @RequestBody  RequestLogin requestLogin, HttpSession session) {

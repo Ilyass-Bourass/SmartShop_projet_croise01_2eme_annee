@@ -3,7 +3,7 @@ package com.smartshop.smartshop.controller;
 
 import com.smartshop.smartshop.dto.client.RequestClient;
 import com.smartshop.smartshop.dto.client.ResponseClient;
-import com.smartshop.smartshop.service.ClientService;
+import com.smartshop.smartshop.service.implementation.ClientServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/clients")
 
 public class ClientController {
-    private final ClientService clientService;
+    private final ClientServiceImpl clientService;
 
     @PostMapping
     public ResponseEntity<ResponseClient> createClient(@Valid @RequestBody RequestClient requestClient) {
