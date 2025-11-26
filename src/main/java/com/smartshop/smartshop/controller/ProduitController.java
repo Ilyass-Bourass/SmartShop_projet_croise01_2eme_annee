@@ -34,4 +34,10 @@ public class ProduitController {
         List<ResponseProduitDTO> produits = produitService.findAll(page, size, isExiste);
         return new ResponseEntity<>(produits, HttpStatus.OK);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteProduit(@PathVariable Long id) {
+        String message = produitService.deleteProduit(id);
+        return new ResponseEntity<>(message, HttpStatus.OK);
+    }
 }

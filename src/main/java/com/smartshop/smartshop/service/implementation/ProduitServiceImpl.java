@@ -4,6 +4,7 @@ import com.smartshop.smartshop.dto.produit.RequestProduitDTO;
 import com.smartshop.smartshop.dto.produit.ResponseProduitDTO;
 import com.smartshop.smartshop.entity.Produit;
 import com.smartshop.smartshop.exception.DuplicateResourceException;
+import com.smartshop.smartshop.exception.ResourceNotFoundException;
 import com.smartshop.smartshop.mapper.produit.ProduitMapper;
 import com.smartshop.smartshop.repository.ProduitRepository;
 import com.smartshop.smartshop.service.ProduitService;
@@ -50,7 +51,10 @@ public class ProduitServiceImpl implements ProduitService {
 
     @Override
     public String deleteProduit(Long id) {
-        return "";
+        Produit produit = produitRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Produit de id " + id + " n'existe pas."));
+        produitRepository.delete(produit);
+        return "Le produit avec l'id " + id + " a été supprimé avec succès.";
     }
 
     @Override
