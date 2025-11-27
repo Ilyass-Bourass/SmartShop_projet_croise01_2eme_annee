@@ -35,7 +35,13 @@ public class PaiementController {
     public ResponseEntity<ResponsePaiementDTO> getPaiementById(@PathVariable Long id) {
         ResponsePaiementDTO paiement = paiementService.findCommandeById(id);
         return new ResponseEntity<>(paiement, HttpStatus.OK);
-        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deletePaiement(@PathVariable Long id) {
+        String response = paiementService.deletePaiement(id);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
     @GetMapping("/validerCheque/{id}")
     public ResponseEntity<String> validerPaiementParCheque(@PathVariable Long id) {

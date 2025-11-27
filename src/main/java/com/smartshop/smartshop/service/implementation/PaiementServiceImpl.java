@@ -76,8 +76,10 @@ public class PaiementServiceImpl implements PaiementService {
     }
 
     @Override
-    public String deleteCommande(Long id) {
-        return "";
+    public String deletePaiement(Long id) {
+        Paiement paiement = paiementRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Paiement n'existe pas de le id :"+id));
+        paiementRepository.delete(paiement);
+        return "Paiement supprimé avec succès de l'id :"+id;
     }
 
     @Override

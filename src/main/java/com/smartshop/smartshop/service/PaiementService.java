@@ -12,7 +12,7 @@ import java.util.List;
 public interface PaiementService {
     ResponsePaiementDTO createPaiment(RequestPaiementDTO paiementDTO);
     List<ResponsePaiementDTO> findAll();
-    String deleteCommande(Long id);
+    String deletePaiement(Long id);
     ResponsePaiementDTO updatePaiement(Long id, RequestPaiementDTO requestPaiementDTO);
     ResponsePaiementDTO findCommandeById(Long id);
     String validerPaiementParCheque(Long id);
