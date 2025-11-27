@@ -8,6 +8,7 @@ import com.smartshop.smartshop.entity.Commande;
 import com.smartshop.smartshop.entity.LigneCommande;
 import com.smartshop.smartshop.entity.Produit;
 import com.smartshop.smartshop.enums.NiveauFidelite;
+import com.smartshop.smartshop.enums.StatutCommande;
 import com.smartshop.smartshop.exception.ResourceNotFoundException;
 import com.smartshop.smartshop.mapper.commande.CommandeMapper;
 import com.smartshop.smartshop.repository.ClientRepository;
@@ -47,6 +48,11 @@ public class CommandeServiceImpl implements CommandeService {
         for(var ligneCommandeRequest : requestCommandeDTO.getLigneCommandes()){
             Produit produit = produitRepository.findById(ligneCommandeRequest.getProduitId())
                     .orElseThrow(() -> new ResourceNotFoundException("Produit n'existe pas avec l'id : " + ligneCommandeRequest.getProduitId()));
+
+            if(produit.getStockDisponible() < ligneCommandeRequest.getQuantite()){
+                throw new ResourceNotFoundException("Le stock actuel du produit de id : " + ligneCommandeRequest.getProduitId()+" est :"+produit.getStockDisponible()+ " et votre commande est :"+ligneCommandeRequest.getQuantite());
+            }
+
             LigneCommande ligneCommande = new LigneCommande();
             ligneCommande.setProduit(produit);
             ligneCommande.setQuantite(ligneCommandeRequest.getQuantite());
