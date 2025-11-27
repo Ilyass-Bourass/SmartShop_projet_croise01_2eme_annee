@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "paiements")
@@ -21,7 +22,8 @@ public class Paiement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Integer numeroPaiment;
+    @Column(unique = true)
+    private String numeroPaiment;
     @Column(nullable = false)
     private Double montant;
 
@@ -48,5 +50,12 @@ public class Paiement {
     @PrePersist
     public void prePersist() {
         datePaiement = LocalDateTime.now();
+        numeroPaiment = "PAY-"+UUID.randomUUID().toString().substring(0, 8);
+        if(typePaiement.equals(TypePaiement.CHEQUE)){
+            statutPaiement=StatutPaiement.ENATTENTE;
+        }else{
+            statutPaiement=StatutPaiement.ENCAISSE;
+            dateEncaisement=LocalDateTime.now();
+        }
     }
 }
