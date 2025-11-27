@@ -3,6 +3,11 @@ package com.smartshop.smartshop.controller;
 
 import com.smartshop.smartshop.dto.auth.RequestLogin;
 import com.smartshop.smartshop.dto.auth.ResponseLogin;
+import com.smartshop.smartshop.entity.Client;
+import com.smartshop.smartshop.enums.RoleUtilisateur;
+import com.smartshop.smartshop.exception.ResourceNotFoundException;
+import com.smartshop.smartshop.mapper.client.ClientMapper;
+import com.smartshop.smartshop.repository.ClientRepository;
 import com.smartshop.smartshop.service.implementation.AuthServiceImpl;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -20,6 +25,8 @@ import java.util.Map;
 
 public class AuthController {
     private final AuthServiceImpl authService;
+    private final ClientRepository clientRepository;
+    private final ClientMapper clientMapper;
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, ResponseLogin>> login(@Valid @RequestBody  RequestLogin requestLogin, HttpSession session) {
@@ -46,6 +53,11 @@ public class AuthController {
         if (currentUser == null) {
             return new ResponseEntity<>("accun utilisateur connecté", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(currentUser, HttpStatus.OK);
+        if(currentUser.getRole().equals(RoleUtilisateur.CLIENT)){
+            Client client = clientRepository.findByEmail(currentUser.getEmail()).orElseThrow(()->new ResourceNotFoundException("le client n'existe pas"));
+            return new ResponseEntity<>(clientMapper.toResponseClient(client), HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(currentUser, HttpStatus.OK);
+        }
     }
 }
