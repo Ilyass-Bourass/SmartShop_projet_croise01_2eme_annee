@@ -15,4 +15,5 @@ public interface PaiementService {
     String deleteCommande(Long id);
     ResponseCommandeDTO updateCommande(Long id, RequestCommandeDTO requestCommandeDTO);
     ResponseCommandeDTO findCommandeById(Long id);
+    String validerPaiementParCheque(Long id);
 }

@@ -7,6 +7,7 @@ import com.smartshop.smartshop.dto.paiement.ResponsePaiementDTO;
 import com.smartshop.smartshop.entity.Commande;
 import com.smartshop.smartshop.entity.Paiement;
 import com.smartshop.smartshop.enums.StatutCommande;
+import com.smartshop.smartshop.enums.StatutPaiement;
 import com.smartshop.smartshop.enums.TypePaiement;
 import com.smartshop.smartshop.exception.ExceptionConflit;
 import com.smartshop.smartshop.exception.ResourceNotFoundException;
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -35,7 +37,7 @@ public class PaiementServiceImpl implements PaiementService {
         Commande commande = commandeRepository.findById(paiementDTO.getIdCommande()).orElseThrow(()-> new ResourceNotFoundException("Commande n'existe pas de le id :"+paiementDTO.getIdCommande()));
 
         if(commande.getStatutCommande()!= StatutCommande.PENDING){
-            throw new ResourceNotFoundException("la commande doit etre en etat PENDING pour effectuer un paiement");
+            throw new ExceptionConflit("la commande doit etre en etat PENDING pour effectuer un paiement");
         }
 
         if(commande.getMontantRestantPayer() == 0){
@@ -85,5 +87,38 @@ public class PaiementServiceImpl implements PaiementService {
     @Override
     public ResponseCommandeDTO findCommandeById(Long id) {
         return null;
+    }
+
+    @Override
+    public String validerPaiementParCheque(Long id) {
+        Paiement paiement = paiementRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Paiement n'existe pas de le id :"+id));
+
+        if(paiement.getTypePaiement()!=TypePaiement.CHEQUE){
+            throw new ExceptionConflit("le paiement doit etre de type CHEQUE pour etre validé");
+        }
+
+            Commande commande = paiement.getCommande();
+            if(commande.getStatutCommande()!= StatutCommande.PENDING){
+                throw new ExceptionConflit("la commande doit etre en etat PENDING pour valider le paiement");
+            }
+
+            if(commande.getMontantRestantPayer() == 0){
+                throw  new ResourceNotFoundException("la commande est déja payée contacter l'admin pour valider la commande");
+            }
+
+            Double montantRestantAayer;
+
+            if(commande.getMontantRestantPayer()-paiement.getMontant()<=0){
+                montantRestantAayer=0.0;
+            }else {
+                montantRestantAayer=commande.getMontantRestantPayer()-paiement.getMontant();
+            }
+            commande.setMontantRestantPayer(montantRestantAayer);
+            commandeRepository.save(commande);
+            paiement.setDateEncaisement(LocalDateTime.now());
+            paiement.setStatutPaiement(StatutPaiement.ENCAISSE);
+            paiementRepository.save(paiement);
+
+        return "Paiement par cheque validé avec succès pour la commande id :"+commande.getId();
     }
 }

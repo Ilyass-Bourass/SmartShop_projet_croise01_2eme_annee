@@ -8,10 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,9 +16,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 public class PaiementController {
     private final PaiementService paiementService;
+
     @PostMapping
     public ResponseEntity<ResponsePaiementDTO> savePaiement(@Valid @RequestBody RequestPaiementDTO requestPaiementDTO) {
         ResponsePaiementDTO responsePaiementDTO = paiementService.createPaiment(requestPaiementDTO);
         return new ResponseEntity<>(responsePaiementDTO, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/validerCheque/{id}")
+    public ResponseEntity<String> validerPaiementParCheque(@PathVariable Long id) {
+        String response = paiementService.validerPaiementParCheque(id);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
