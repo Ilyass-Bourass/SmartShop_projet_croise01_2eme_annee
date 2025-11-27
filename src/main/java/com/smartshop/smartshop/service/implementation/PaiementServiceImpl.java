@@ -6,6 +6,7 @@ import com.smartshop.smartshop.dto.paiement.RequestPaiementDTO;
 import com.smartshop.smartshop.dto.paiement.ResponsePaiementDTO;
 import com.smartshop.smartshop.entity.Commande;
 import com.smartshop.smartshop.entity.Paiement;
+import com.smartshop.smartshop.enums.StatutCommande;
 import com.smartshop.smartshop.enums.TypePaiement;
 import com.smartshop.smartshop.exception.ExceptionConflit;
 import com.smartshop.smartshop.exception.ResourceNotFoundException;
@@ -32,6 +33,10 @@ public class PaiementServiceImpl implements PaiementService {
     @Transactional
     public ResponsePaiementDTO createPaiment(RequestPaiementDTO paiementDTO) {
         Commande commande = commandeRepository.findById(paiementDTO.getIdCommande()).orElseThrow(()-> new ResourceNotFoundException("Commande n'existe pas de le id :"+paiementDTO.getIdCommande()));
+
+        if(commande.getStatutCommande()!= StatutCommande.PENDING){
+            throw new ResourceNotFoundException("la commande doit etre en etat PENDING pour effectuer un paiement");
+        }
 
         if(commande.getMontantRestantPayer() == 0){
             throw  new ResourceNotFoundException("la commande est déja payée contacter l'admin pour valider la commande");
