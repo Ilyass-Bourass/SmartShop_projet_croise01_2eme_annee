@@ -46,7 +46,6 @@ public class Paiement {
     @ManyToOne
     @JoinColumn(name = "commande_id", nullable = false)
     private Commande commande;
-
     @PrePersist
     public void prePersist() {
         datePaiement = LocalDateTime.now();
