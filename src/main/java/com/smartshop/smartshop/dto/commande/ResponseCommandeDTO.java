@@ -20,6 +20,7 @@ public class ResponseCommandeDTO {
     private StatutCommande statutCommande;
     private Long idClient;
     private String nomClient;
+    private String niveauFidelite;
     private String codePromo;
     private Double sousTotal;
     private Double montantRemise;

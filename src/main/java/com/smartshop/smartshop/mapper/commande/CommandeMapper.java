@@ -19,6 +19,7 @@ public interface CommandeMapper {
 
     @Mapping(target = "idClient", source = "client.id")
     @Mapping(target = "nomClient", source = "client.nom")
+    @Mapping(target = "niveauFidelite",source = "client.niveauFidelite")
     ResponseCommandeDTO toResponseCommandeDTO(Commande commande);
 
 
