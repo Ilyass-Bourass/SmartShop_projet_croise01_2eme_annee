@@ -28,4 +28,10 @@ public class PaiementController {
         String response = paiementService.validerPaiementParCheque(id);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @GetMapping("/refuserCheque/{id}")
+    public ResponseEntity<String> refuserPaiementParCheque(@PathVariable Long id) {
+        String response = paiementService.refuserPaiementParCheque(id);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }

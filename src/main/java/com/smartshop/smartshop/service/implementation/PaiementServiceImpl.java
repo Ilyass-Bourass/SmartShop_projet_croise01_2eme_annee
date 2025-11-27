@@ -121,4 +121,17 @@ public class PaiementServiceImpl implements PaiementService {
 
         return "Paiement par cheque validé avec succès pour la commande id :"+commande.getId();
     }
+
+    @Override
+    public String refuserPaiementParCheque(Long id) {
+        Paiement paiement = paiementRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Paiement n'existe pas de le id :"+id));
+
+        if(paiement.getTypePaiement()!=TypePaiement.CHEQUE || paiement.getStatutPaiement()!= StatutPaiement.ENATTENTE){
+            throw new ExceptionConflit("le paiement doit etre de type CHEQUE et en etat ENATTENTE pour etre refusé");
+        }
+        paiement.setStatutPaiement(StatutPaiement.REJETE);
+        paiementRepository.save(paiement);
+        return "Paiement par cheque refusé avec succès pour la commande id :"+id;
+
+    }
 }
