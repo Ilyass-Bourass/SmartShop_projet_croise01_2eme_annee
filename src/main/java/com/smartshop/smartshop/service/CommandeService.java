@@ -13,5 +13,6 @@ public interface CommandeService {
     String deleteCommande(Long id);
     ResponseCommandeDTO updateCommande(Long id, RequestCommandeDTO requestCommandeDTO);
     ResponseCommandeDTO findCommandeById(Long id);
+    String annulerCommande(Long id);
 
 }

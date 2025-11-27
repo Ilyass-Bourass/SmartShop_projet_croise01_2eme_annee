@@ -122,6 +122,17 @@ public class CommandeServiceImpl implements CommandeService {
         return commandeMapper.toResponseCommandeDTO(commande);
     }
 
+    @Override
+    public String annulerCommande(Long id) {
+        Commande commande =commandeRepository.findById(id).orElseThrow(()->new  ResourceNotFoundException("Commande n'existe pas"));
+        if(commande.getStatutCommande()!=StatutCommande.PENDING){
+            throw  new ResourceNotFoundException("la commande n'est pas de statut pendding");
+        }
+        commande.setStatutCommande(StatutCommande.CANCELLED);
+        commandeRepository.save(commande);
+        return "la commande est annuler avec succée";
+    }
+
     private Double applierRemiseFidelite(Client client,Double sousTotal) {
         Double montantRemise = 0.0;
         if(client.getNiveauFidelite().equals(NiveauFidelite.SILVER) && sousTotal >=500){
