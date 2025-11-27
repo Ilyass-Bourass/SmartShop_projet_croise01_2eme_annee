@@ -19,7 +19,7 @@ public class RequestPaiementDTO {
     @NotNull(message = "le montant est obligatoire")
     @PositiveOrZero(message = "le montant doit être positif")
     private Double montant;
-    @NotBlank(message = "Le type de paiement est obligatoire")
+    @NotNull(message = "Le type de paiement est obligatoire")
     private TypePaiement typePaiement;
 
     private String numeroCheque;
