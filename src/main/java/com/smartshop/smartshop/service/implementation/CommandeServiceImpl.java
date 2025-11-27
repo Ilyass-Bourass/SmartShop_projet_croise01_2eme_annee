@@ -7,6 +7,7 @@ import com.smartshop.smartshop.entity.Client;
 import com.smartshop.smartshop.entity.Commande;
 import com.smartshop.smartshop.entity.LigneCommande;
 import com.smartshop.smartshop.entity.Produit;
+import com.smartshop.smartshop.enums.NiveauFidelite;
 import com.smartshop.smartshop.exception.ResourceNotFoundException;
 import com.smartshop.smartshop.mapper.commande.CommandeMapper;
 import com.smartshop.smartshop.repository.ClientRepository;
@@ -55,11 +56,17 @@ public class CommandeServiceImpl implements CommandeService {
             sousTotal += ligneCommande.getPrixUnitaire() * ligneCommande.getQuantite();
         }
 
-        Double montantTva = sousTotal * (requestCommandeDTO.getTauxTva() / 100);
-        Double montantTtc = sousTotal + montantTva;
+        Double montantRemise = 0.0;
 
         commande.setLigneCommandes(ligneCommandes);
+        montantRemise=applierRemiseFidelite(client,sousTotal);
+        Double montantHtApresRemise = sousTotal -montantRemise;
+
+        Double montantTva = montantHtApresRemise * (requestCommandeDTO.getTauxTva() / 100);
+        Double montantTtc = montantHtApresRemise + montantTva;
         commande.setSousTotal(sousTotal);
+        commande.setMontantRemise(montantRemise);
+        commande.setMontantHtApresRemise(montantHtApresRemise);
         commande.setMontantTva(montantTva);
         commande.setMontantTtc(montantTtc);
         commande.setMontantRestantPayer(montantTtc);
@@ -107,5 +114,17 @@ public class CommandeServiceImpl implements CommandeService {
                 .orElseThrow(() -> new ResourceNotFoundException("Commande n'existe pas avec l'id : " + id));
 
         return commandeMapper.toResponseCommandeDTO(commande);
+    }
+
+    private Double applierRemiseFidelite(Client client,Double sousTotal) {
+        Double montantRemise = 0.0;
+        if(client.getNiveauFidelite().equals(NiveauFidelite.SILVER) && sousTotal >=500){
+            montantRemise=sousTotal*0.05;
+        } else if (client.getNiveauFidelite().equals(NiveauFidelite.GOLD) && sousTotal >=800) {
+            montantRemise=sousTotal*0.10;
+        } else if (client.getNiveauFidelite().equals(NiveauFidelite.PLATINUM) && sousTotal >= 1200) {
+            montantRemise=sousTotal*0.15;
+        }
+        return montantRemise;
     }
 }
