@@ -71,7 +71,8 @@ public class PaiementServiceImpl implements PaiementService {
 
     @Override
     public List<ResponsePaiementDTO> findAll() {
-        return List.of();
+        List<Paiement> paiements = paiementRepository.findAll();
+        return paiements.stream().map(paiementMapper::toResponsePaiementDTO).toList();
     }
 
     @Override
