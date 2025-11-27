@@ -31,6 +31,12 @@ public class PaiementController {
         return new ResponseEntity<>(paiements, HttpStatus.OK);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponsePaiementDTO> getPaiementById(@PathVariable Long id) {
+        ResponsePaiementDTO paiement = paiementService.findCommandeById(id);
+        return new ResponseEntity<>(paiement, HttpStatus.OK);
+        }
+
     @GetMapping("/validerCheque/{id}")
     public ResponseEntity<String> validerPaiementParCheque(@PathVariable Long id) {
         String response = paiementService.validerPaiementParCheque(id);

@@ -81,13 +81,14 @@ public class PaiementServiceImpl implements PaiementService {
     }
 
     @Override
-    public ResponseCommandeDTO updateCommande(Long id, RequestCommandeDTO requestCommandeDTO) {
+    public ResponsePaiementDTO updatePaiement(Long id, RequestPaiementDTO requestPaiementDTO) {
         return null;
     }
 
     @Override
-    public ResponseCommandeDTO findCommandeById(Long id) {
-        return null;
+    public ResponsePaiementDTO findCommandeById(Long id) {
+        Paiement paiement = paiementRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Paiement n'existe pas de le id :"+id));
+        return paiementMapper.toResponsePaiementDTO(paiement);
     }
 
     @Override

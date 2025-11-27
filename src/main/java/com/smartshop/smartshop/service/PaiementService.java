@@ -13,8 +13,8 @@ public interface PaiementService {
     ResponsePaiementDTO createPaiment(RequestPaiementDTO paiementDTO);
     List<ResponsePaiementDTO> findAll();
     String deleteCommande(Long id);
-    ResponseCommandeDTO updateCommande(Long id, RequestCommandeDTO requestCommandeDTO);
-    ResponseCommandeDTO findCommandeById(Long id);
+    ResponsePaiementDTO updatePaiement(Long id, RequestPaiementDTO requestPaiementDTO);
+    ResponsePaiementDTO findCommandeById(Long id);
     String validerPaiementParCheque(Long id);
     String refuserPaiementParCheque(Long id);
 }
