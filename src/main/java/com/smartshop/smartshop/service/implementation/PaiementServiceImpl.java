@@ -7,6 +7,7 @@ import com.smartshop.smartshop.dto.paiement.ResponsePaiementDTO;
 import com.smartshop.smartshop.entity.Commande;
 import com.smartshop.smartshop.entity.Paiement;
 import com.smartshop.smartshop.enums.TypePaiement;
+import com.smartshop.smartshop.exception.ExceptionConflit;
 import com.smartshop.smartshop.exception.ResourceNotFoundException;
 import com.smartshop.smartshop.mapper.paiement.PaiementMapper;
 import com.smartshop.smartshop.repository.CommandeRepository;
@@ -31,9 +32,15 @@ public class PaiementServiceImpl implements PaiementService {
     @Transactional
     public ResponsePaiementDTO createPaiment(RequestPaiementDTO paiementDTO) {
         Commande commande = commandeRepository.findById(paiementDTO.getIdCommande()).orElseThrow(()-> new ResourceNotFoundException("Commande n'existe pas de le id :"+paiementDTO.getIdCommande()));
+
         if(commande.getMontantRestantPayer() == 0){
             throw  new ResourceNotFoundException("la commande est déja payée contacter l'admin pour valider la commande");
         }
+
+        if(paiementDTO.getTypePaiement()==TypePaiement.ESPECES && paiementDTO.getMontant() >=20000.0){
+            throw new ExceptionConflit("On peut pas accépter un paiement en espéces superieur ou égal à 20000");
+        }
+
         Double montantRestantAayer;
 
         if(paiementDTO.getTypePaiement()== TypePaiement.CHEQUE){
