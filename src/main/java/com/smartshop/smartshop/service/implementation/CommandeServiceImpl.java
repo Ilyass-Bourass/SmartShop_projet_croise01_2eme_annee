@@ -9,6 +9,7 @@ import com.smartshop.smartshop.entity.LigneCommande;
 import com.smartshop.smartshop.entity.Produit;
 import com.smartshop.smartshop.enums.NiveauFidelite;
 import com.smartshop.smartshop.enums.StatutCommande;
+import com.smartshop.smartshop.exception.ExceptionConflit;
 import com.smartshop.smartshop.exception.ResourceNotFoundException;
 import com.smartshop.smartshop.mapper.commande.CommandeMapper;
 import com.smartshop.smartshop.repository.ClientRepository;
@@ -45,12 +46,12 @@ public class CommandeServiceImpl implements CommandeService {
 
         List<LigneCommande> ligneCommandes = new ArrayList<>();
 
-        for(var ligneCommandeRequest : requestCommandeDTO.getLigneCommandes()){
+        for (var ligneCommandeRequest : requestCommandeDTO.getLigneCommandes()) {
             Produit produit = produitRepository.findById(ligneCommandeRequest.getProduitId())
                     .orElseThrow(() -> new ResourceNotFoundException("Produit n'existe pas avec l'id : " + ligneCommandeRequest.getProduitId()));
 
-            if(produit.getStockDisponible() < ligneCommandeRequest.getQuantite()){
-                throw new ResourceNotFoundException("Le stock actuel du produit de id : " + ligneCommandeRequest.getProduitId()+" est :"+produit.getStockDisponible()+ " et votre commande est :"+ligneCommandeRequest.getQuantite());
+            if (produit.getStockDisponible() < ligneCommandeRequest.getQuantite()) {
+                throw new ResourceNotFoundException("Le stock actuel du produit de id : " + ligneCommandeRequest.getProduitId() + " est :" + produit.getStockDisponible() + " et votre commande est :" + ligneCommandeRequest.getQuantite());
             }
 
             LigneCommande ligneCommande = new LigneCommande();
@@ -65,8 +66,8 @@ public class CommandeServiceImpl implements CommandeService {
         Double montantRemise = 0.0;
 
         commande.setLigneCommandes(ligneCommandes);
-        montantRemise=applierRemiseFidelite(client,sousTotal);
-        Double montantHtApresRemise = sousTotal -montantRemise;
+        montantRemise = applierRemiseFidelite(client, sousTotal);
+        Double montantHtApresRemise = sousTotal - montantRemise;
 
         Double montantTva = montantHtApresRemise * (requestCommandeDTO.getTauxTva() / 100);
         Double montantTtc = montantHtApresRemise + montantTva;
@@ -124,24 +125,70 @@ public class CommandeServiceImpl implements CommandeService {
 
     @Override
     public String annulerCommande(Long id) {
-        Commande commande =commandeRepository.findById(id).orElseThrow(()->new  ResourceNotFoundException("Commande n'existe pas"));
-        if(commande.getStatutCommande()!=StatutCommande.PENDING){
-            throw  new ResourceNotFoundException("la commande n'est pas de statut pendding");
+        Commande commande = commandeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Commande n'existe pas"));
+        if (commande.getStatutCommande() != StatutCommande.PENDING) {
+            throw new ResourceNotFoundException("la commande n'est pas de statut pendding");
         }
         commande.setStatutCommande(StatutCommande.CANCELLED);
         commandeRepository.save(commande);
         return "la commande est annuler avec succée";
     }
 
-    private Double applierRemiseFidelite(Client client,Double sousTotal) {
+    @Override
+    @Transactional
+    public ResponseCommandeDTO validerCommande(Long id) {
+        Commande commande = commandeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Commande n'existe pas"));
+
+        if (commande.getStatutCommande() != StatutCommande.PENDING) {
+            throw new ExceptionConflit("la commande n'est pas de statut pendding");
+        }
+
+        if (commande.getMontantRestantPayer() != 0) {
+            throw new ExceptionConflit("la commande n'est pas encore payée");
+        }
+
+        commande.getLigneCommandes().forEach(ligneCommande -> {
+            Produit produit = ligneCommande.getProduit();
+            produit.setStockDisponible(produit.getStockDisponible() - ligneCommande.getQuantite());
+            produitRepository.save(produit);
+        });
+
+        Client client = commande.getClient();
+        appliquerNiveauFidelite(client, commande.getMontantTtc());
+
+        commande.setStatutCommande(StatutCommande.CONFIRMED);
+        Commande savedCommande = commandeRepository.save(commande);
+        return commandeMapper.toResponseCommandeDTO(savedCommande);
+    }
+
+    private Double applierRemiseFidelite(Client client, Double sousTotal) {
         Double montantRemise = 0.0;
-        if(client.getNiveauFidelite().equals(NiveauFidelite.SILVER) && sousTotal >=500){
-            montantRemise=sousTotal*0.05;
-        } else if (client.getNiveauFidelite().equals(NiveauFidelite.GOLD) && sousTotal >=800) {
-            montantRemise=sousTotal*0.10;
+        if (client.getNiveauFidelite().equals(NiveauFidelite.SILVER) && sousTotal >= 500) {
+            montantRemise = sousTotal * 0.05;
+        } else if (client.getNiveauFidelite().equals(NiveauFidelite.GOLD) && sousTotal >= 800) {
+            montantRemise = sousTotal * 0.10;
         } else if (client.getNiveauFidelite().equals(NiveauFidelite.PLATINUM) && sousTotal >= 1200) {
-            montantRemise=sousTotal*0.15;
+            montantRemise = sousTotal * 0.15;
         }
         return montantRemise;
+    }
+
+    private void appliquerNiveauFidelite(Client client, Double montantTtc) {
+
+        String ancienNiveau = client.getNiveauFidelite().name();
+        if (client.getMontantTotalCumule() +montantTtc >= 15000 || client.getNombreTotalCommandes()>=19) {
+            client.setNiveauFidelite(NiveauFidelite.PLATINUM);
+
+        } else if (client.getMontantTotalCumule() +montantTtc >= 5000  || client.getNombreTotalCommandes()>=9 ) {
+            client.setNiveauFidelite(NiveauFidelite.GOLD);
+        }
+
+        else if (client.getMontantTotalCumule() + montantTtc >= 1000 || client.getNombreTotalCommandes()>=2) {
+            client.setNiveauFidelite(NiveauFidelite.SILVER);
+        }
+
+        client.setMontantTotalCumule(client.getMontantTotalCumule()+montantTtc);
+        client.setNombreTotalCommandes(client.getNombreTotalCommandes()+1);
+        clientRepository.save(client);
     }
 }

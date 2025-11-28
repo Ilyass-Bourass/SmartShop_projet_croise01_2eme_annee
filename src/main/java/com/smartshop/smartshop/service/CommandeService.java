@@ -14,5 +14,6 @@ public interface CommandeService {
     ResponseCommandeDTO updateCommande(Long id, RequestCommandeDTO requestCommandeDTO);
     ResponseCommandeDTO findCommandeById(Long id);
     String annulerCommande(Long id);
+    ResponseCommandeDTO validerCommande(Long id);
 
 }

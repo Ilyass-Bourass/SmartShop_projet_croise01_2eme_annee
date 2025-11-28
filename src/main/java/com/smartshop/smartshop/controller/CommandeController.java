@@ -49,6 +49,13 @@ public class CommandeController {
         List<ResponseCommandeDTO> commandes = commandeService.findAllCommandesClient(idClient);
         return new ResponseEntity<>(commandes, HttpStatus.OK);
     }
+
+    @GetMapping("/validerCommande/{id}")
+    public ResponseEntity<ResponseCommandeDTO> getValiderCommandeById(@PathVariable Long id) {
+        ResponseCommandeDTO commande=commandeService.validerCommande(id);
+        return new ResponseEntity<>(commande, HttpStatus.OK);
+    }
+
     @GetMapping("/annulerCommande/{id}")
     public ResponseEntity<String> getAnnulerCommandeById(@PathVariable Long id) {
         String resultat=commandeService.annulerCommande(id);
