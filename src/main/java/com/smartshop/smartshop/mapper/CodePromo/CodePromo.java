@@ -1,4 +1,4 @@
-git package com.smartshop.smartshop.mapper.CodePromo;
+package com.smartshop.smartshop.mapper.CodePromo;
 
 import com.smartshop.smartshop.dto.codePromo.ResponseCodePromoDTO;
 import com.smartshop.smartshop.dto.commande.RequestCommandeDTO;
