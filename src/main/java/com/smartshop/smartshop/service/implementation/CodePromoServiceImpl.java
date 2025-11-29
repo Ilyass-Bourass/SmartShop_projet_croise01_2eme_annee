@@ -34,7 +34,9 @@ public class CodePromoServiceImpl implements CodePromoService {
 
     @Override
     public List<ResponseCodePromoDTO> getAllCodePromos() {
-        return List.of();
+        List<CodePromo> codePromos = codePromoRepository.findAll();
+        return codePromos.stream().
+                map(codePromoMapper::toResponseCodePromoDTO).toList();
     }
 
     @Override
