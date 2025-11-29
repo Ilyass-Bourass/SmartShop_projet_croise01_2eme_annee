@@ -38,4 +38,10 @@ public class CodePromoController {
         ResponseCodePromoDTO responseCodePromoDTO=codePromoService.getCodePromoById(Long.parseLong(id));
         return new ResponseEntity<>(responseCodePromoDTO,HttpStatus.OK);
     }
+
+    @DeleteMapping("/{id}" )
+    public  ResponseEntity<String> deleteCodePromoById(@PathVariable String id) {
+        String response =codePromoService.deleteCodePromo(Long.parseLong(id));
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }

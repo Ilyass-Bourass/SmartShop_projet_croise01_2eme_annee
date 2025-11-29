@@ -54,6 +54,9 @@ public class CodePromoServiceImpl implements CodePromoService {
 
     @Override
     public String deleteCodePromo(Long id) {
-        return "";
+        CodePromo codePromo = codePromoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Le code promo de l id : " + id + " n'existe pas"));
+        codePromoRepository.delete(codePromo);
+        return "le code promo a été supprimé avec succès";
     }
 }
