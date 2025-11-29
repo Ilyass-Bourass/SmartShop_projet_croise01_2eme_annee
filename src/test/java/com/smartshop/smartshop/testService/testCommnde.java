@@ -9,6 +9,8 @@ import com.smartshop.smartshop.entity.Commande;
 import com.smartshop.smartshop.entity.LigneCommande;
 import com.smartshop.smartshop.entity.Produit;
 import com.smartshop.smartshop.enums.NiveauFidelite;
+import com.smartshop.smartshop.exception.ExceptionConflit;
+import com.smartshop.smartshop.exception.ResourceNotFoundException;
 import com.smartshop.smartshop.mapper.commande.CommandeMapper;
 import com.smartshop.smartshop.repository.ClientRepository;
 import com.smartshop.smartshop.repository.CodePromoRepository;
@@ -26,9 +28,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -160,6 +162,22 @@ public class testCommnde {
             assertEquals(2000.0, result.getSousTotal());
             assertEquals(100.0, result.getMontantRemise());
             assertEquals(2280.0, result.getMontantTtc());
+        }
+
+        @Test
+        void senario03_tester_creation_commande_stock_insuffisant(){
+
+            produit.setStockDisponible(10);
+
+            when(clientRepository.findById(1L)).thenReturn(Optional.of(client));
+            when(produitRepository.findById(1L)).thenReturn(Optional.of(produit));
+            when(commandeMapper.toCommande(any(RequestCommandeDTO.class))).thenReturn(commande);
+
+            ExceptionConflit exceptionConflit =assertThrows(ExceptionConflit.class, ()->{commandeService.createCommande(requestCommandeDTO);});
+
+            String expectedMessage ="Le stock actuel du produit de id : 1 est :10 et votre commande est :20";
+            assertEquals(exceptionConflit.getMessage(), expectedMessage);
+
         }
 
     }

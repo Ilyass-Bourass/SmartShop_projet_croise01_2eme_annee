@@ -50,7 +50,7 @@ public class CommandeServiceImpl implements CommandeService {
                     .orElseThrow(() -> new ResourceNotFoundException("Produit n'existe pas avec l'id : " + ligneCommandeRequest.getProduitId()));
 
             if (produit.getStockDisponible() < ligneCommandeRequest.getQuantite()) {
-                throw new ResourceNotFoundException("Le stock actuel du produit de id : " + ligneCommandeRequest.getProduitId() + " est :" + produit.getStockDisponible() + " et votre commande est :" + ligneCommandeRequest.getQuantite());
+                throw new ExceptionConflit("Le stock actuel du produit de id : " + ligneCommandeRequest.getProduitId() + " est :" + produit.getStockDisponible() + " et votre commande est :" + ligneCommandeRequest.getQuantite());
             }
 
             LigneCommande ligneCommande = new LigneCommande();
