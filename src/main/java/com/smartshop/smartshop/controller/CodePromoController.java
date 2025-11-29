@@ -44,4 +44,10 @@ public class CodePromoController {
         String response =codePromoService.deleteCodePromo(Long.parseLong(id));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @PostMapping("/changerEtatCodepromo/{id}")
+    public ResponseEntity<String> changerEtatCodePromo(@PathVariable Long id,@RequestParam Boolean etat) {
+        String response= codePromoService.changerEtatCodePromo(id,etat);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }

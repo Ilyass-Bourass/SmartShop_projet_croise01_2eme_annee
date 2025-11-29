@@ -12,6 +12,6 @@ public interface CodePromoService {
     ResponseCodePromoDTO createCodePromo(RequestCodePromoDTO requestCodePromoDTO);
     List<ResponseCodePromoDTO> getAllCodePromos();
     ResponseCodePromoDTO getCodePromoById(Long id);
-    ResponseCodePromoDTO changerEtatCodePromo(Long id, Boolean etat);
+    String changerEtatCodePromo(Long id, Boolean etat);
     String deleteCodePromo(Long id);
 }

@@ -48,8 +48,16 @@ public class CodePromoServiceImpl implements CodePromoService {
     }
 
     @Override
-    public ResponseCodePromoDTO changerEtatCodePromo(Long id, Boolean etat) {
-        return null;
+    public String changerEtatCodePromo(Long id, Boolean etat) {
+        CodePromo codePromo = codePromoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Le code promo de l id : " + id + " n'existe pas"));
+        if(etat == codePromo.getIsActif()){
+            return "le code promo est déjà dans cet état";
+        }else {
+            codePromo.setIsActif(etat);
+            codePromoRepository.save(codePromo);
+        return "nous avons changé l'état du code promo avec succès";
+        }
     }
 
     @Override
@@ -59,4 +67,5 @@ public class CodePromoServiceImpl implements CodePromoService {
         codePromoRepository.delete(codePromo);
         return "le code promo a été supprimé avec succès";
     }
+
 }
