@@ -6,6 +6,7 @@ import com.smartshop.smartshop.dto.codePromo.ResponseCodePromoDTO;
 import com.smartshop.smartshop.entity.CodePromo;
 import com.smartshop.smartshop.exception.DuplicateResourceException;
 import com.smartshop.smartshop.exception.ExceptionConflit;
+import com.smartshop.smartshop.exception.ResourceNotFoundException;
 import com.smartshop.smartshop.mapper.CodePromo.CodePromoMapper;
 import com.smartshop.smartshop.repository.CodePromoRepository;
 import com.smartshop.smartshop.service.CodePromoService;
@@ -41,7 +42,9 @@ public class CodePromoServiceImpl implements CodePromoService {
 
     @Override
     public ResponseCodePromoDTO getCodePromoById(Long id) {
-        return null;
+        CodePromo codePromo = codePromoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Le code promo de l id : " + id + " n'existe pas"));
+        return codePromoMapper.toResponseCodePromoDTO(codePromo);
     }
 
     @Override

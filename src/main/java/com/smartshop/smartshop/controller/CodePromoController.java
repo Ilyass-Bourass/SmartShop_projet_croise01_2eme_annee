@@ -32,4 +32,10 @@ public class CodePromoController {
         List<ResponseCodePromoDTO> responseCodePromoDTOS=codePromoService.getAllCodePromos();
         return new ResponseEntity<>(responseCodePromoDTOS,HttpStatus.OK);
     }
+
+    @GetMapping("/{id}" )
+    public ResponseEntity<ResponseCodePromoDTO> getCodePromoById(@PathVariable String id) {
+        ResponseCodePromoDTO responseCodePromoDTO=codePromoService.getCodePromoById(Long.parseLong(id));
+        return new ResponseEntity<>(responseCodePromoDTO,HttpStatus.OK);
+    }
 }
