@@ -3,16 +3,14 @@ package com.smartshop.smartshop.service.implementation;
 import com.smartshop.smartshop.dto.commande.RequestCommandeDTO;
 import com.smartshop.smartshop.dto.commande.ResponseCommandeDTO;
 import com.smartshop.smartshop.dto.ligneCommande.ResponseLigneCommandeDTO;
-import com.smartshop.smartshop.entity.Client;
-import com.smartshop.smartshop.entity.Commande;
-import com.smartshop.smartshop.entity.LigneCommande;
-import com.smartshop.smartshop.entity.Produit;
+import com.smartshop.smartshop.entity.*;
 import com.smartshop.smartshop.enums.NiveauFidelite;
 import com.smartshop.smartshop.enums.StatutCommande;
 import com.smartshop.smartshop.exception.ExceptionConflit;
 import com.smartshop.smartshop.exception.ResourceNotFoundException;
 import com.smartshop.smartshop.mapper.commande.CommandeMapper;
 import com.smartshop.smartshop.repository.ClientRepository;
+import com.smartshop.smartshop.repository.CodePromoRepository;
 import com.smartshop.smartshop.repository.CommandeRepository;
 import com.smartshop.smartshop.repository.ProduitRepository;
 import com.smartshop.smartshop.service.CommandeService;
@@ -30,6 +28,7 @@ public class CommandeServiceImpl implements CommandeService {
     private final CommandeMapper commandeMapper;
     private final ClientRepository clientRepository;
     private final ProduitRepository produitRepository;
+    private final CodePromoRepository codePromoRepository;
 
     @Override
     @Transactional
@@ -66,7 +65,22 @@ public class CommandeServiceImpl implements CommandeService {
         Double montantRemise = 0.0;
 
         commande.setLigneCommandes(ligneCommandes);
-        montantRemise = applierRemiseFidelite(client, sousTotal);
+
+        boolean activerCodePromo = false;
+
+        String codePromorequest = requestCommandeDTO.getCodePromo();
+
+        if(codePromorequest != null && !codePromorequest.isEmpty()) {
+            CodePromo promo = codePromoRepository.findByCodePromo(codePromorequest);
+
+            if(promo != null && Boolean.TRUE.equals(promo.getIsActif())) {
+                activerCodePromo = true;
+            }
+        }
+
+
+        montantRemise = applierRemiseFidelite(client, sousTotal, activerCodePromo);
+
         Double montantHtApresRemise = sousTotal - montantRemise;
 
         Double montantTva = montantHtApresRemise * (requestCommandeDTO.getTauxTva() / 100);
@@ -161,14 +175,18 @@ public class CommandeServiceImpl implements CommandeService {
         return commandeMapper.toResponseCommandeDTO(savedCommande);
     }
 
-    private Double applierRemiseFidelite(Client client, Double sousTotal) {
+    private Double applierRemiseFidelite(Client client, Double sousTotal,Boolean activerCodePromo) {
         Double montantRemise = 0.0;
+        Double remiseCodePromo=0.0;
+        if(activerCodePromo){
+            remiseCodePromo=0.05;
+        }
         if (client.getNiveauFidelite().equals(NiveauFidelite.SILVER) && sousTotal >= 500) {
-            montantRemise = sousTotal * 0.05;
+            montantRemise = sousTotal * (0.05+remiseCodePromo);
         } else if (client.getNiveauFidelite().equals(NiveauFidelite.GOLD) && sousTotal >= 800) {
-            montantRemise = sousTotal * 0.10;
+            montantRemise = sousTotal * (0.10+remiseCodePromo);
         } else if (client.getNiveauFidelite().equals(NiveauFidelite.PLATINUM) && sousTotal >= 1200) {
-            montantRemise = sousTotal * 0.15;
+            montantRemise = sousTotal * (0.15+remiseCodePromo);
         }
         return montantRemise;
     }

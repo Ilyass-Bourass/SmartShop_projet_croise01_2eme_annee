@@ -8,4 +8,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public interface CodePromoRepository extends JpaRepository<CodePromo,Long> {
     CodePromo findByCodePromo(String codePromo);
+    Boolean existsByCodePromo(String codePromo);
 }
