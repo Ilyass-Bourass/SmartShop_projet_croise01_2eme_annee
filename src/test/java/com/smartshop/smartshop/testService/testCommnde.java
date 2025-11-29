@@ -55,6 +55,8 @@ public class testCommnde {
     private Produit produit;
     private Commande commande;
     private LigneCommande ligneCommande;
+    private RequestCommandeDTO requestCommandeDTO;
+    private RequestLigneCommandeDTO requestLigneCommandeDTO;
 
 
     @BeforeEach
@@ -88,24 +90,24 @@ public class testCommnde {
                 .ligneCommandes(List.of(ligneCommande))
                 .build();
 
+        requestLigneCommandeDTO = RequestLigneCommandeDTO.builder()
+                .produitId(1L)
+                .prixUnitaire(100.0)
+                .quantite(20)
+                .build();
+
+        requestCommandeDTO = RequestCommandeDTO.builder()
+                .idClient(1L)
+                .tauxTva(20.0)
+                .ligneCommandes(List.of(requestLigneCommandeDTO))
+                .build();
+
     }
 
 
     @Test
 
     void senario01_creer_commande_client_niveau_fidelite_basic(){
-
-            RequestLigneCommandeDTO requestLigneCommandeDTO = RequestLigneCommandeDTO.builder()
-                    .produitId(1L)
-                    .prixUnitaire(100.0)
-                    .quantite(20)
-                    .build();
-
-            RequestCommandeDTO requestCommandeDTO = RequestCommandeDTO.builder()
-                    .idClient(1L)
-                    .tauxTva(20.0)
-                    .ligneCommandes(List.of(requestLigneCommandeDTO))
-                    .build();
 
             ResponseCommandeDTO responseExpected = ResponseCommandeDTO.builder()
                     .sousTotal(2000.0)
@@ -120,7 +122,7 @@ public class testCommnde {
             when(produitRepository.findById(1L)).thenReturn(Optional.of(produit));
             when(commandeMapper.toCommande(any(RequestCommandeDTO.class))).thenReturn(commande);
             when(commandeRepository.save(any(Commande.class))).thenReturn(commande);
-            when(commandeMapper.toResponseCommandeDTO(any(Commande.class))).thenReturn(responseExpected); // ✅ AJOUT IMPORTANT
+            when(commandeMapper.toResponseCommandeDTO(any(Commande.class))).thenReturn(responseExpected);
 
         ResponseCommandeDTO result = commandeService.createCommande(requestCommandeDTO);
 
@@ -128,6 +130,36 @@ public class testCommnde {
             assertEquals(2000.0, result.getSousTotal());
             assertEquals(0.0, result.getMontantRemise());
             assertEquals(2400.0, result.getMontantTtc());
+        }
+
+        @Test
+        void senario02_creer_commande_client_niveau_fidelite_silver(){
+
+            client.setNiveauFidelite(NiveauFidelite.SILVER);
+            client.setMontantTotalCumule(6000.0);
+            client.setNombreTotalCommandes(5);
+
+            ResponseCommandeDTO responseExpected = ResponseCommandeDTO.builder()
+                    .sousTotal(2000.0)
+                    .montantRemise(100.0)
+                    .montantHtApresRemise(1900.0)
+                    .montantTva(380.0)
+                    .montantTtc(2280.0)
+                    .montantRestantPayer(2280.0)
+                    .build();
+
+            when(clientRepository.findById(1L)).thenReturn(Optional.of(client));
+            when(produitRepository.findById(1L)).thenReturn(Optional.of(produit));
+            when(commandeMapper.toCommande(any(RequestCommandeDTO.class))).thenReturn(commande);
+            when(commandeRepository.save(any(Commande.class))).thenReturn(commande);
+            when(commandeMapper.toResponseCommandeDTO(any(Commande.class))).thenReturn(responseExpected);
+
+            ResponseCommandeDTO result = commandeService.createCommande(requestCommandeDTO);
+
+            assertNotNull(result);
+            assertEquals(2000.0, result.getSousTotal());
+            assertEquals(100.0, result.getMontantRemise());
+            assertEquals(2280.0, result.getMontantTtc());
         }
 
     }
