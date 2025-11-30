@@ -1,6 +1,7 @@
 package com.smartshop.smartshop.controller;
 
 
+import com.smartshop.smartshop.annotations.AdminOnly;
 import com.smartshop.smartshop.dto.commande.RequestCommandeDTO;
 import com.smartshop.smartshop.dto.commande.ResponseCommandeDTO;
 import com.smartshop.smartshop.entity.Commande;
@@ -20,42 +21,49 @@ import java.util.List;
 public class CommandeController {
     private final CommandeService commandeService;
 
+    @AdminOnly
     @PostMapping
     public ResponseEntity<ResponseCommandeDTO> saveCommande(@Valid @RequestBody RequestCommandeDTO requestCommandeDTO) {
         ResponseCommandeDTO savedCommande = commandeService.createCommande(requestCommandeDTO);
         return new ResponseEntity<>(savedCommande, HttpStatus.CREATED);
     }
 
+    @AdminOnly
     @GetMapping
     public ResponseEntity<List<ResponseCommandeDTO>> getAllCommandes() {
         java.util.List<ResponseCommandeDTO> commandes = commandeService.findAllCommandes();
         return new ResponseEntity<>(commandes, HttpStatus.OK);
     }
 
+    @AdminOnly
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteCommande(@PathVariable Long id) {
         String response = commandeService.deleteCommande(id);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @AdminOnly
     @GetMapping("/{id}")
     public ResponseEntity<ResponseCommandeDTO> getCommandeById(@PathVariable Long id) {
         ResponseCommandeDTO commande = commandeService.findCommandeById(id);
         return new ResponseEntity<>(commande, HttpStatus.OK);
     }
 
+    @AdminOnly
     @GetMapping("/client/{idClient}")
     public ResponseEntity<List<ResponseCommandeDTO>> getCommandesByClientId(@PathVariable Long idClient) {
         List<ResponseCommandeDTO> commandes = commandeService.findAllCommandesClient(idClient);
         return new ResponseEntity<>(commandes, HttpStatus.OK);
     }
 
+    @AdminOnly
     @GetMapping("/validerCommande/{id}")
     public ResponseEntity<ResponseCommandeDTO> getValiderCommandeById(@PathVariable Long id) {
         ResponseCommandeDTO commande=commandeService.validerCommande(id);
         return new ResponseEntity<>(commande, HttpStatus.OK);
     }
 
+    @AdminOnly
     @GetMapping("/annulerCommande/{id}")
     public ResponseEntity<String> getAnnulerCommandeById(@PathVariable Long id) {
         String resultat=commandeService.annulerCommande(id);

@@ -68,4 +68,14 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(Map.of("message", ex.getMessage()), HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(UnauthorizedException.class)
+    public  ResponseEntity<?> handleUnauthorizedException(UnauthorizedException ex) {
+        return new ResponseEntity<>(Map.of("message", ex.getMessage()), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<?> handleForbiddenException(ForbiddenException ex) {
+        return new ResponseEntity<>(Map.of("message", ex.getMessage()), HttpStatus.FORBIDDEN);
+    }
+
 }

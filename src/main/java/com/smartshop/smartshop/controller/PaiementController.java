@@ -1,6 +1,7 @@
 package com.smartshop.smartshop.controller;
 
 
+import com.smartshop.smartshop.annotations.AdminOnly;
 import com.smartshop.smartshop.dto.paiement.RequestPaiementDTO;
 import com.smartshop.smartshop.dto.paiement.ResponsePaiementDTO;
 import com.smartshop.smartshop.service.PaiementService;
@@ -19,36 +20,42 @@ import java.util.List;
 public class PaiementController {
     private final PaiementService paiementService;
 
+    @AdminOnly
     @PostMapping
     public ResponseEntity<ResponsePaiementDTO> savePaiement(@Valid @RequestBody RequestPaiementDTO requestPaiementDTO) {
         ResponsePaiementDTO responsePaiementDTO = paiementService.createPaiment(requestPaiementDTO);
         return new ResponseEntity<>(responsePaiementDTO, HttpStatus.CREATED);
     }
 
+    @AdminOnly
     @GetMapping
     public ResponseEntity<List<ResponsePaiementDTO>> getAllPaiements() {
         java.util.List<ResponsePaiementDTO> paiements = paiementService.findAll();
         return new ResponseEntity<>(paiements, HttpStatus.OK);
     }
 
+    @AdminOnly
     @GetMapping("/{id}")
     public ResponseEntity<ResponsePaiementDTO> getPaiementById(@PathVariable Long id) {
         ResponsePaiementDTO paiement = paiementService.findCommandeById(id);
         return new ResponseEntity<>(paiement, HttpStatus.OK);
     }
 
+    @AdminOnly
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletePaiement(@PathVariable Long id) {
         String response = paiementService.deletePaiement(id);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @AdminOnly
     @GetMapping("/validerCheque/{id}")
     public ResponseEntity<String> validerPaiementParCheque(@PathVariable Long id) {
         String response = paiementService.validerPaiementParCheque(id);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @AdminOnly
     @GetMapping("/refuserCheque/{id}")
     public ResponseEntity<String> refuserPaiementParCheque(@PathVariable Long id) {
         String response = paiementService.refuserPaiementParCheque(id);

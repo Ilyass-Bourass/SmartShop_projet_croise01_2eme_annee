@@ -1,6 +1,7 @@
 package com.smartshop.smartshop.controller;
 
 
+import com.smartshop.smartshop.annotations.AdminOnly;
 import com.smartshop.smartshop.dto.client.RequestClient;
 import com.smartshop.smartshop.dto.client.ResponseClient;
 import com.smartshop.smartshop.service.implementation.ClientServiceImpl;
@@ -17,18 +18,21 @@ import org.springframework.web.bind.annotation.*;
 public class ClientController {
     private final ClientServiceImpl clientService;
 
+    @AdminOnly
     @PostMapping
     public ResponseEntity<ResponseClient> createClient(@Valid @RequestBody RequestClient requestClient) {
         ResponseClient responseClient = clientService.createClient(requestClient);
         return new ResponseEntity<>(responseClient, HttpStatus.CREATED);
     }
 
+    @AdminOnly
     @GetMapping("/{id}")
     public ResponseEntity<ResponseClient> getClientById(@PathVariable Long id) {
         ResponseClient responseClient = clientService.findClientById(id);
         return new ResponseEntity<>(responseClient, HttpStatus.OK);
     }
 
+    @AdminOnly
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteClientById(@PathVariable Long id) {
         String message = clientService.DeleteClientById(id);

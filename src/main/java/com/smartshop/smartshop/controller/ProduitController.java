@@ -1,6 +1,7 @@
 package com.smartshop.smartshop.controller;
 
 
+import com.smartshop.smartshop.annotations.AdminOnly;
 import com.smartshop.smartshop.dto.produit.RequestProduitDTO;
 import com.smartshop.smartshop.dto.produit.ResponseProduitDTO;
 import com.smartshop.smartshop.service.ProduitService;
@@ -19,12 +20,14 @@ import java.util.List;
 public class ProduitController {
     private final ProduitService produitService;
 
+    @AdminOnly
     @PostMapping
     public ResponseEntity<ResponseProduitDTO> saveProduit(@Valid @RequestBody RequestProduitDTO requestProduitDTO) {
         ResponseProduitDTO responseProduitDTO = produitService.createProduit(requestProduitDTO);
         return new ResponseEntity<>(responseProduitDTO, HttpStatus.CREATED);
     }
 
+    @AdminOnly
     @GetMapping
     public ResponseEntity<List<ResponseProduitDTO>> findAllProduits(
             @RequestParam (defaultValue = "0") int page,
@@ -35,6 +38,7 @@ public class ProduitController {
         return new ResponseEntity<>(produits, HttpStatus.OK);
     }
 
+    @AdminOnly
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteProduit(@PathVariable Long id) {
         String message = produitService.deleteProduit(id);

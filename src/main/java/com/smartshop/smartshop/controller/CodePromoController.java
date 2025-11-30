@@ -1,6 +1,7 @@
 package com.smartshop.smartshop.controller;
 
 
+import com.smartshop.smartshop.annotations.AdminOnly;
 import com.smartshop.smartshop.dto.codePromo.RequestCodePromoDTO;
 import com.smartshop.smartshop.dto.codePromo.ResponseCodePromoDTO;
 import com.smartshop.smartshop.mapper.CodePromo.CodePromoMapper;
@@ -21,30 +22,35 @@ public class CodePromoController {
     private final CodePromoMapper codePromoMapper;
     private final CodePromoService codePromoService;
 
+    @AdminOnly
     @PostMapping
     public ResponseEntity<ResponseCodePromoDTO> saveCodePromo(@Valid @RequestBody RequestCodePromoDTO requestCodePromoDTO) {
         ResponseCodePromoDTO responseCodePromoDTO = codePromoService.createCodePromo(requestCodePromoDTO);
         return new ResponseEntity<>(responseCodePromoDTO, HttpStatus.CREATED);
     }
 
+    @AdminOnly
     @GetMapping
     public ResponseEntity<List<ResponseCodePromoDTO>> getAllCodePromos() {
         List<ResponseCodePromoDTO> responseCodePromoDTOS=codePromoService.getAllCodePromos();
         return new ResponseEntity<>(responseCodePromoDTOS,HttpStatus.OK);
     }
 
+    @AdminOnly
     @GetMapping("/{id}" )
     public ResponseEntity<ResponseCodePromoDTO> getCodePromoById(@PathVariable String id) {
         ResponseCodePromoDTO responseCodePromoDTO=codePromoService.getCodePromoById(Long.parseLong(id));
         return new ResponseEntity<>(responseCodePromoDTO,HttpStatus.OK);
     }
 
+    @AdminOnly
     @DeleteMapping("/{id}" )
     public  ResponseEntity<String> deleteCodePromoById(@PathVariable String id) {
         String response =codePromoService.deleteCodePromo(Long.parseLong(id));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @AdminOnly
     @PostMapping("/changerEtatCodepromo/{id}")
     public ResponseEntity<String> changerEtatCodePromo(@PathVariable Long id,@RequestParam Boolean etat) {
         String response= codePromoService.changerEtatCodePromo(id,etat);
